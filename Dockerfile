@@ -1,6 +1,6 @@
 FROM python:3
 
-ADD serverbot.py /
+ADD bot.py /
 
 ADD .env /
 
