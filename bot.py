@@ -1,13 +1,17 @@
 import discord
 from python_aternos import Client, atserver, Lists
 from dotenv import load_dotenv
-import or
-TOKEN = os.getenv("BOT-TOKEN")
-PASSWORD = os.getenv("ATERNOS-PASSWORD")
-USERNAME = os.getenv("ATERNOS-USERNAME")
-DOMAIN = os.getenv("ATERNOS-DOMAIN")
+import os
+from query import get_info
+
+load_dotenv()
+TOKEN = os.getenv("TOKEN")
+PASSWORD = os.getenv("PASSWORD")
+USERNAME = os.getenv("USERNAME")
+DOMAIN = os.getenv("DOMAIN")
 ADMIN = os.getenv("ADMIN")
 PREFIX = os.getenv("PREFIX")
+print(USERNAME, PASSWORD)
 at = Client.from_credentials(USERNAME, PASSWORD)
 servers = at.list_servers()
 for s in servers:
@@ -20,9 +24,11 @@ print(serv is None)
 
 client = discord.Client(intents=intents)
 
+
 @client.event
 async def on_ready():
     print(f"We have logged in as {client.user}")
+
 
 @client.event
 async def on_message(message):
@@ -31,25 +37,32 @@ async def on_message(message):
 
     if message.content.startswith(f"{PREFIX}start"):
         serv.start()
-        await message.channel.send("Server Started! You might need to wait a minute for it start, be patient!")
+        await message.channel.send(
+            "Server Started! You might need to wait a minute for it start, be patient!"
+        )
     elif message.content.startswith(f"{PREFIX}stop"):
-        if message.author == ADMIN
+        if message.author == ADMIN:
             serv.stop()
             await message.channel.send("Server Stopped!")
         else:
-            await message.channel.send("Server couldn't be stopped, you aren't an administrator!")
+            await message.channel.send(
+                "Server couldn't be stopped, you aren't an administrator!"
+            )
     elif message.content.startswith(f"{PREFIX}restart"):
         if message.author == ADMIN:
             serv.restart()
             await message.channel.send("Server Restarted!")
         else:
-            await message.channel.send("Server couldn't be restarted, you aren't an administrator!")
+            await message.channel.send(
+                "Server couldn't be restarted, you aren't an administrator!"
+            )
     elif message.content.startswith(f"{PREFIX}cancel"):
         serv.cancel()
         await message.channel.send("Server starting cancelled.")
     elif message.content.startswith(f"{PREFIX}info"):
         serv.fetch()
-        await message.channel.send(f'''***{serv.domain}***
+        await message.channel.send(
+            f"""***{serv.domain}***
         Message of the Day: {serv.motd}
         Status: {serv.status}
         Full address: {serv.address}:{serv.port}
@@ -59,13 +72,16 @@ async def on_message(message):
         Minecraft: {serv.software} {serv.version}
         Is Bedrock: {str(serv.edition == atserver.Edition.bedrock)}
         Is Java: {str(serv.edition == atserver.Edition.java)}
-                                ''')
+                                """
+        )
     elif message.content.startswith(f"{PREFIX}whitelist"):
         if message.author == ADMIN:
             if len(message.content) > 11:
                 whitelist = serv.players(Lists.whl)
                 whitelist.add(message.content[11:])
-                await message.channel.send(f"Added {message.content[11:]} to whitelist.")
+                await message.channel.send(
+                    f"Added {message.content[11:]} to whitelist."
+                )
             else:
                 whitelist = serv.players(Lists.whl)
                 await message.channel.send(whitelist.list_players())
@@ -75,7 +91,9 @@ async def on_message(message):
         if message.author == ADMIN:
             whitelist = serv.players(Lists.whl)
             whitelist.remove(message.content[13:])
-            await message.channel.send(f"Removed {message.content[13:]} from whitelist.")
+            await message.channel.send(
+                f"Removed {message.content[13:]} from whitelist."
+            )
         else:
             await message.channel.send("You aren't an admin!")
     elif message.content.startswith(f"{PREFIX}ban"):
@@ -102,4 +120,19 @@ async def on_message(message):
             await message.channel.send(f"DeOPed {message.content[6:]}.")
         else:
             await message.channel.send("You aren't an admin!")
+    elif message.content.startswith(f"{PREFIX}players"):
+        serv.fetch()
+        if not serv.status == "offline":
+            queryserver = get_info()["players"]["sample"]
+            players = []
+            for item in queryserver:
+                players.append(item["name"])
+            if not serv.players_count == 0:
+                await message.channel.send(f"Players online: {', '.join(players)}")
+            else:
+                await message.channel.send("No players are currently online.")
+        else:
+            await message.channel.send("Server is offline.")
+
 client.run(TOKEN)
+c

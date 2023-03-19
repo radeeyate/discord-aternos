@@ -23,3 +23,11 @@ This is also availble as a Docker image that you can run containerized.
 To use build the image by running this:
 `docker build -t discordaternos .`
 You can of course replace `discordaternos` is that command to whatever you want to image to be called. You can then run the image, and you can probably figure that out. As extra, you should probably set an hourly cron job to restart the Docker container since the Discord gateway sometimes likes to randomly disconnect.
+
+If you don't want to build it yourself, you can get it from Dockerhub.
+To use it, run
+
+```sh
+docker pull radeeyate/discord-aternos
+docker run --env-file /path/to/env/file radeeyate/discord-aternos
+```

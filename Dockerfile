@@ -2,8 +2,12 @@ FROM python:3
 
 ADD bot.py /
 
-ADD .env /
+ADD query.py /
+
+ADD startup.sh /
+
+CMD ["chmod +x /startup.sh"]
 
 RUN pip install discord.py python-aternos python-dotenv
 
-CMD [ "python3", "./bot.py" ]
+ENTRYPOINT ["/startup.sh"]
