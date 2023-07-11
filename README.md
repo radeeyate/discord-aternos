@@ -1,6 +1,7 @@
 # discord-aternos
 
 ⚠️ WARNING ⚠️ Using this has a chance of getting you permanently banned from Aternos. I highly recommend that you use backups.
+Also, this bot is outdated and will not work with newer version of Python-Aternos. I'll probably fix this in the future.
 
 I made a little Discord bot that allows control of an [Aternos](ttps://aternos.org) Minecraft server.
 
